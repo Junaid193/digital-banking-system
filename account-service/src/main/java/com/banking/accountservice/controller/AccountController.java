@@ -5,13 +5,14 @@ import com.banking.accountservice.dto.CreateAccountRequest;
 import com.banking.accountservice.entity.Account;
 import com.banking.accountservice.service.AccountService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/accounts")
 public class AccountController {
