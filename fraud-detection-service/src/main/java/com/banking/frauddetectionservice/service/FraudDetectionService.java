@@ -159,7 +159,7 @@ public class FraudDetectionService {
         log.info("Balance check - amount : {} maxAllowed: {} suspicious: {}",
                 amount,maxAllowed,amount.compareTo(maxAllowed)>0);
 
-        return maxAllowed.compareTo(maxAllowed) > 0;
+        return amount.compareTo(maxAllowed) > 0;
     }
 
 
