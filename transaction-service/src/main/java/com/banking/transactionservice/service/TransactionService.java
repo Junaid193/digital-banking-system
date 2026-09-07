@@ -192,7 +192,19 @@ public class TransactionService {
         log.info("SAGA COMPLETE - transaction {} completed", transaction.getId());
     }
 
-    private void processCleanResult
+    public void processCleanResult(String transactionId){
+        Transaction transaction = transactionRespository.findById(transactionId)
+                .orElseThrow(() -> new RuntimeException(
+                        "Transaction not found : " + transactionId
+                ));
+
+        if(transaction.getStatus()!= TransactionStatus.PROCESSING){
+            log.warn("transaction {}  not PROCESSING - skipping ",  transactionId);
+            return;
+        }
+
+        completeTransaction(transaction);
+    }
 
     private TransactionResponse mapToResponse(Transaction transaction){
 
