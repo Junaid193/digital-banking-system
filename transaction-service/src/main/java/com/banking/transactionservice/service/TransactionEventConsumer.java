@@ -6,6 +6,7 @@ import com.banking.transactionservice.repository.TransactionRespository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class TransactionEventConsumer {
 
     private final TransactionRespository transactionRespository;
     private final RedisTemplate<String, String> redisTemplate;
+    private final TransactionService transactionService;
     private static final long OTP_EXPIRY_MINUTE = 5;
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
@@ -29,6 +31,7 @@ public class TransactionEventConsumer {
     //consume verifiaction.required
     //generate otp to verify
 
+    @KafkaListener(topics = "verification.required")
      public void consumeVerificationRequired(
              @Payload Map<String, Object> payload){
 
@@ -76,4 +79,30 @@ public class TransactionEventConsumer {
              log.error("Error handling verification required {} : ", e.getMessage());
          }
      }
+
+     @KafkaListener(topics = "fraud.check.clean")
+     public void consumeFraudCheckCleanResult(
+             @Payload Map<String, Object> payload){
+        try{
+             String transactionId = (String) payload.get("transactionId");
+             transactionService.processCleanResult(transactionId);
+        }catch(Exception e){
+            log.error("Error processing fraud check result : {}", e.getMessage());
+        }
+     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
